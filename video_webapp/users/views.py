@@ -3,18 +3,19 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomUserChangeForm, ProfileUpdateForm, UserChangePasswordForm
-from ipware import get_client_ip
+from ipware.ip import get_ip
 
 def register(request):
   if request.method == 'POST':
     form = CustomUserCreationForm(request.POST)
     if form.is_valid():
       instance = form.save(commit=False)
-      instance.user_ip = get_client_ip(request)
-      instance.save()
-      username = form.cleaned_data.get('username')
-      messages.success(request, f'Account created for {username}!')
-      return redirect('login')
+      instance.user_ip = get_ip(request)
+      if instance.user_ip:
+        instance.save()
+        username = form.cleaned_data.get('username')
+        messages.success(request, f'Account created for {username}!')
+        return redirect('login')
 
   else:
     form = CustomUserCreationForm()
