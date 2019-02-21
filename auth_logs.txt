@@ -1,0 +1,12 @@
+List of changes made and why for reference
++++++++++++++++++++++++++++++++++++++++++++++++
+
+- Added user app to create and manage users
+- Added setting for custom user support
+- Added custom user in users/models.py
+- Added custom admin
+- Added user, posts apps and urls
+- Added html templates
+- Added allowed hosts
+- Registered posts with admin
+- Added views for posts

@@ -1,0 +1,37 @@
+{% extends "posts/base.html" %}
+{% block video %}
+<div class="row">
+  <!--Spacing-->
+  <div class="col-md-1"></div>
+  <!--Actual content-->
+  <div class="col-md-8">
+    <!--Video-->
+    {% if object.video %}
+      <video name="{{ object.video }}" controls width='100%'>
+        <source src="{{ object.video.url }}"></source>
+      </video>
+    {% endif %}
+    <!--Video Title-->
+    <h2 class="article-title">{{ object.title }}</h2>
+    <!--Video Description-->
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+          <small class="text-muted">{{ object.date_posted|date:"l, F dS, Y, P T" }}</small>
+        </div>
+        <p class="article-content">{{ object.content }}</p>
+        <!-- Update and Delete buttons -->
+        {% if object.author == user %}
+        <div>
+          <a class="btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
+          <a class="btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
+        </div>
+        {% endif %}
+      </div>
+    </article>
+    <!--Comments-->
+  </div>
+</div>
+{% endblock video %}
