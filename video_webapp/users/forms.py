@@ -1,10 +1,10 @@
 # users/forms.py
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from .models import CustomUser, Profile
 from django.contrib.auth import get_user_model
 
-class CustomUserCreationForm(UserCreationForm):
+class CustomUserCreationForm(forms.ModelForm):
 
   class Meta(UserCreationForm):
     model = CustomUser
@@ -21,7 +21,7 @@ class ProfileUpdateForm(forms.ModelForm):
     model = Profile
     fields = ('image',)
 
-class UserChangePasswordForm(PasswordChangeForm):
-  class Meta:
-    model = get_user_model()
-    fields = ('password',)
+class CustomAuthenticationForm(AuthenticationForm):
+  def confirm_login_allowed(self, user):
+    if not user.is_active or not user.is_validated:
+      raise forms.ValidationError('There was a problem with your login.', code='invalid_login')

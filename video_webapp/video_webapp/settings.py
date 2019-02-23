@@ -25,8 +25,15 @@ SECRET_KEY = '*ew46bik8dbv%@=-0fn@dxzi6t##h3c59^a)1q+ewrm*(7rc__'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['attu1.cs.washington.edu',
+               'attu2.cs.washington.edu',
+               'attu3.cs.washington.edu',
+               'attu4.cs.washington.edu',
+               'attu5.cs.washington.edu',
+               'attu6.cs.washington.edu',
+               'attu7.cs.washington.edu',
+               'localhost',
+]
 
 # Application definition
 
@@ -52,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middleware.AuthRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'video_webapp.urls'
@@ -136,11 +144,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4' # html templates
 LOGIN_REDIRECT_URL = 'posts-home'
 LOGIN_URL = 'login'
 
-ALLOWED_HOSTS=['attu1.cs.washington.edu',
-               'attu2.cs.washington.edu',
-               'attu3.cs.washington.edu',
-               'attu4.cs.washington.edu',
-               'attu5.cs.washington.edu',
-               'attu6.cs.washington.edu',
-               'attu7.cs.washington.edu',
-               'localhost']
+AUTHENTICATION_BACKENDS = ['users.backend.IpBackend']
+
+# ADMIN INFO
+# To reset, use shell
+ADMIN_LOGIN = 'Nick'
+ADMIN_PASSWORD = 'pbkdf2_sha256$120000$Xp6bC6cb9PPl$PRAphAIFY2CsWyXeulxcgg6drOuXYdvEHPwRKiRbcnc=' #keysersoze

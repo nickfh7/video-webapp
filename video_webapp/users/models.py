@@ -5,8 +5,9 @@ from PIL import Image
 
 # Create your models here.
 class CustomUser(AbstractUser):
-  # add additional fields in here
-  user_ip = models.GenericIPAddressField(blank=True, null=True)
+  # add additional fields in here for custom user
+  user_ip = models.GenericIPAddressField(blank=True, null=True, unique=True)
+  password = models.GenericIPAddressField(blank=True, null=True)
   
 class Profile(models.Model):
   user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE) # Cascade removes profile if user is deleted
