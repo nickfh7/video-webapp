@@ -1,4 +1,5 @@
 {% extends "posts/base.html" %}
+{% load crispy_forms_tags %}
 {% block video %}
 <div class="row">
   <!--Spacing-->
@@ -25,13 +26,38 @@
         <!-- Update and Delete buttons -->
         {% if object.author == user %}
         <div>
-          <a class="btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
-          <a class="btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
+          <a class="btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update Post</a>
+          <a class="btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete Post</a>
         </div>
         {% endif %}
       </div>
     </article>
+    <legend class="border-bottom mb-4">Comments ({{ comments.count }})
+      <!--New Comment Button-->
+      <a class="btn-secondary btn-sm mt-1 mb-1" href="{% url 'comment-create' object.id %}">Create New Comment</a>
+    </legend>
     <!--Comments-->
+    {% for com in comments %}
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{ com.author.profile.image.url }}">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ com.author }}</a>
+          <small class="text-muted">{{ com.date_posted|date:"l, F dS, Y, P T" }}</small>
+        </div>
+        <p class="article-content">{{ com.comment }}</p>
+        {% if com.author == user %}
+        <div>
+          <a class="text-muted" href="{% url 'comment-update' com.id %}">Update Comment</a>
+          |
+          <a class="text-muted" href="{% url 'comment-delete' com.id %}">Delete Comment</a>
+        </div>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+    <!--Add pagination?-->
+    <!--End Comment-->
   </div>
 </div>
 {% endblock video %}

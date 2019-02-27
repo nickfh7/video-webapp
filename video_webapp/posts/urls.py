@@ -5,7 +5,10 @@ from .views import (
   PostCreateView,
   PostUpdateView,
   PostDeleteView,
-  UserPostListView
+  UserPostListView,
+  CommentView,
+  CommentUpdateView,
+  CommentDeleteView,
 )
 from . import views
 
@@ -14,10 +17,13 @@ from . import views
 urlpatterns = [
     path('', PostListView.as_view(), name="posts-home"),
     path('user/<str:username>', UserPostListView.as_view(), name="user-posts"),
-    path('posts/<int:pk>/', PostDetailView.as_view(), name="post-detail"),
-    path('posts/new/', PostCreateView.as_view(), name="post-create"),
-    path('posts/<int:pk>/update/', PostUpdateView.as_view(), name="post-update"),
-    path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name="post-delete"),
+    path('<int:pk>/', PostDetailView.as_view(), name="post-detail"),
+    path('<int:pk>/new-comment', CommentView.as_view(), name="comment-create"),
+    path('comment/<int:pk>/update', CommentUpdateView.as_view(), name="comment-update"),
+    path('comment/<int:pk>/delete', CommentDeleteView.as_view(), name="comment-delete"),
+    path('new/', PostCreateView.as_view(), name="post-create"),
+    path('<int:pk>/update/', PostUpdateView.as_view(), name="post-update"),
+    path('<int:pk>/delete/', PostDeleteView.as_view(), name="post-delete"),
 ]
 
 # This is what it looks for

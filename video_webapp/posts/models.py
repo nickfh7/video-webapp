@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.core.validators import FileExtensionValidator
+from PIL import Image
 
 # The Post class is a model for creating genereic posts
 # These posts must include a title and content, but
@@ -21,7 +22,6 @@ class Post(models.Model):
   video_thumbnail = models.ImageField(blank=True, default='default_thumbnail.jpg', upload_to='thumbnails/%Y/%m/%d/')
 
   # For resizing thumnail
-  # Possibly use to create thumbnail?
   def save(self, *args, **kwargs):
     # Use the original save first 
     super().save(*args, **kwargs)
@@ -32,8 +32,8 @@ class Post(models.Model):
     thumbnail.thumbnail(output_size)
     thumbnail.save(self.video_thumbnail.path)
 
+  # Use title as the string for this post
   def __str__(self):
-    # Use title as the string for this post
     return self.title
 
   # Gets the url from the post using reverse function
@@ -41,3 +41,8 @@ class Post(models.Model):
     return reverse('post-detail', kwargs={'pk': self.pk})
 
 # Create comment class, use ForiegnKey with Post
+class Comment(models.Model):
+  post = models.ForeignKey(Post, on_delete=models.CASCADE)
+  author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+  comment = models.TextField()
+  date_posted = models.DateTimeField(default=timezone.now)

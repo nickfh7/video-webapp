@@ -1,0 +1,15 @@
+{% extends "posts/base.html" %}
+{% load crispy_forms_tags %}
+{% block video %}
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <fieldset>
+    <legend class="border-bottom mb-4">New Comment</legend>
+    {{ form|crispy }}
+  </fieldset>
+  <div class="form-group">
+    <button class="btn btn-outline-info" type="submit">Post Comment</button>
+    <a class="btn-secondary btn-sm mt-1 mb-1" href="{% url 'posts-home' %}">Cancel</a>
+  </div>
+</form>
+{% endblock video %}
