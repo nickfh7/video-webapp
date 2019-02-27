@@ -3,7 +3,6 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.core.validators import FileExtensionValidator
-from PIL import ImageField
 
 # The Post class is a model for creating genereic posts
 # These posts must include a title and content, but

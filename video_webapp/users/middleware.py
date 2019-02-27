@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 
 # This makes the user always log in
 def AuthRequiredMiddleware(get_response):
@@ -9,7 +9,7 @@ def AuthRequiredMiddleware(get_response):
     response = get_response(request)
 
     # Allow user to continue if logged in
-    if request.user.is_authenticated:
+    if request.user.is_authenticated or request.path == reverse('login') or request.path == reverse('register'):
       return response
     else:
       return redirect('login')
