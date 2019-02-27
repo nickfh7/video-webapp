@@ -56,8 +56,7 @@ class PostDetailView(DetailView):
   # Allows multiple models
   def get_context_data(self, **kwargs):
     context = super(PostDetailView, self).get_context_data(**kwargs)
-    #context['Post'] = Post
-    context['comments'] = Comment.objects.filter(post=Post.objects.get(pk=self.kwargs['pk']))
+    context['comments'] = Comment.objects.filter(post=self.get_object())
     return context
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -95,13 +94,15 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
       return True
     return False
 
-class CommentView(CreateView):
+class CommentCreateView(LoginRequiredMixin, CreateView):
   model = Comment
   fields = ['comment']
 
   # Assign the current user as the author
   def form_valid(self, form):
     form.instance.author = self.request.user
+
+    # Get post using pk in url
     form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
     return super().form_valid(form)
   
@@ -109,6 +110,14 @@ class CommentView(CreateView):
     comment = self.get_object()
     return reverse('post-detail', kwargs={'pk': comment.post.id})
   
+  # Allows multiple models
+  def get_context_data(self, **kwargs):
+    context = super(CommentCreateView, self).get_context_data(**kwargs)
+
+    # Comment does not exist yet, so use the url for post id
+    context['post_pk'] = self.kwargs['pk']
+    return context
+
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Comment
   fields = ['comment']
@@ -127,6 +136,13 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   def get_success_url(self):
     comment = self.get_object()
     return reverse('post-detail', kwargs={'pk': comment.post.id})
+
+  def get_context_data(self, **kwargs):
+    context = super(CommentUpdateView, self).get_context_data(**kwargs)
+
+    # Post does exist now, so use the stored post id
+    context['post_pk'] = self.get_object().post.id
+    return context
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   model = Comment
