@@ -33,22 +33,42 @@
       </div>
     </article>
     <!--Comment Section-->
+    <!--Title-->
     <div class="row">
       <div class="col-md-12">
           <legend class="border-bottom mb-4">Comments ({{ page_obj.paginator.count }}) </legend> 
       </div>
     </div>
-    <!--New Comment-->
-    <div class="row">
-      <div class="col-md-1"></div>
-      <div class="col-md-8">
-        <form method="post">
-          {% csrf_token %}
-          {{ comment_form|crispy }}
-          <button class="btn btn-outline-info" type="submit">Add New Comment</button>
-        </form>
-      </div>
+    <p id="demo"></p>
+    <!--New Comment Button-->
+    <div id='hide-toggle-button1'>
+      <button class="btn btn-outline-info" onclick="hideToggle()">New Comment</button>
     </div>
+    <!--New Comment Form, initially hidden-->
+    <div class="row" id='hide-toggle-button2' style="display:none">
+      <!--Spacing-->
+      <div class="row">
+        <div class="col-md-12">
+            <legend class="mb-4"></legend> 
+        </div>
+      </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-8">
+          <form method="post">
+            {% csrf_token %}
+            {{ comment_form|crispy }}
+            <button class="btn btn-outline-info" type="submit">Add New Comment</button>
+            <button class="btn btn-outline-info" onclick="hideToggle()">Cancel</button>
+          </form>
+        </div>
+      <!-- </div> -->
+    </div>
+    <!--Spacing-->
+    <div class="row">
+        <div class="col-md-12">
+            <legend class="mb-4"></legend> 
+        </div>
+      </div>
     <!--Comments-->
     {% for com in object_list %}
     <article class="media content-section">
@@ -94,6 +114,40 @@
 
     {% endif %}
     <!--End Comment-->
+    <!--Scripts-->
+    <script>
+      function hideToggle() {
+        var x = document.getElementById("hide-toggle-button1");
+        if (x) {
+          if (x.style.display === "none") {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+        }
+        x = document.getElementById("hide-toggle-button2");
+        if (x) {
+          if (x.style.display === "none") {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+        }
+        // var elems = document.getElementsByTagName("hide-toggle");
+        // if (elems){
+        //   for (var i = 0; i < elems.length; i++) {
+        //     var elem = elems[i];
+        //     text += i;
+        //     if (elem.style.display === "none") {
+        //       elem.style.display = "block";
+        //     } else {
+        //       elem.style.display = "none";
+        //     }
+        //     text += i + "<br>";
+        //   }
+        // }
+      }
+    </script>
   </div>
 </div>
 {% endblock video %}
