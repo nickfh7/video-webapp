@@ -1,9 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import (
   LoginRequiredMixin,
   UserPassesTestMixin
 )
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model 
+from django.views.generic.list import MultipleObjectMixin
+from django.views.generic.edit import FormMixin
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.views.generic import (
   ListView, 
   DetailView, 
@@ -14,9 +18,13 @@ from django.views.generic import (
 from django.contrib import messages
 from django.urls import reverse
 from .models import Post, Comment
+from .forms import CommentCreationForm
 # Create your views here.
 
-# Class/object based view for list of posts
+##########################
+# Post Views
+##########################
+
 class PostListView(ListView):
   model = Post
   
@@ -47,17 +55,42 @@ class UserPostListView(ListView):
     user = get_object_or_404(get_user_model(), username=self.kwargs.get('username'))
     return Post.objects.filter(author=user).order_by('-date_posted')
 
-
 # Class/object based view for single posts
-# Uses more of the default conventions
-class PostDetailView(DetailView):
+# Uses MultipleObjectMixin to allow pagination, FormMixin for forms
+class PostDetailView(FormMixin, MultipleObjectMixin, DetailView):
   model = Post
+
+  template_name = 'posts/post_detail.html'
+  paginate_by = 5
+  form_class = CommentCreationForm
 
   # Allows multiple models
   def get_context_data(self, **kwargs):
-    context = super(PostDetailView, self).get_context_data(**kwargs)
-    context['comments'] = Comment.objects.filter(post=self.get_object())
+    object_list = Comment.objects.filter(post=self.get_object()).order_by('-date_posted')
+    context = super(PostDetailView, self).get_context_data(object_list=object_list, **kwargs)
+    context['comment_form'] = self.get_form()
     return context
+
+  def get_success_url(self):
+    return reverse('post-detail', kwargs={'pk': self.object.pk})
+  
+  def post(self, request, *args, **kwargs):
+    if not request.user.is_authenticated:
+      return HttpResponseForbidden()
+
+    self.object = self.get_object()
+    form = self.get_form()
+    
+    # If the forms are valid, get info and save
+    if form.is_valid():
+      comment = form.save(commit=False)
+      comment.post = Post.objects.get(pk=kwargs['pk'])
+      comment.author = request.user
+      messages.success(request, f'Comment Created')
+      comment.save()
+      return self.form_valid(form)
+    else:
+      return self.form_invalid(form)
 
 class PostCreateView(LoginRequiredMixin, CreateView):
   model = Post
@@ -94,29 +127,15 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
       return True
     return False
 
-class CommentCreateView(LoginRequiredMixin, CreateView):
+
+
+##########################
+# Comment Views
+##########################
+
+# Class/object based view for single comments
+class CommentDetailView(DetailView):
   model = Comment
-  fields = ['comment']
-
-  # Assign the current user as the author
-  def form_valid(self, form):
-    form.instance.author = self.request.user
-
-    # Get post using pk in url
-    form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
-    return super().form_valid(form)
-  
-  def get_success_url(self):
-    comment = self.get_object()
-    return reverse('post-detail', kwargs={'pk': comment.post.id})
-  
-  # Allows multiple models
-  def get_context_data(self, **kwargs):
-    context = super(CommentCreateView, self).get_context_data(**kwargs)
-
-    # Comment does not exist yet, so use the url for post id
-    context['post_pk'] = self.kwargs['pk']
-    return context
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
   model = Comment
@@ -133,6 +152,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
       return True
     return False
   
+  # Where to go if comment is created
   def get_success_url(self):
     comment = self.get_object()
     return reverse('post-detail', kwargs={'pk': comment.post.id})
@@ -156,3 +176,40 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   def get_success_url(self):
     comment = self.get_object()
     return reverse('post-detail', kwargs={'pk': comment.post.id})
+
+class CommentListView(ListView):
+  model = Comment
+
+  template_name = 'posts/comment_page.html'
+  context_object_name = 'comments'
+  paginate_by = 5
+
+  # Narrow the query set for displaying a user profile
+  def get_queryset(self):
+    post_pk = username=self.kwargs.get('pk')
+    return Comment.objects.filter(post=Post.objects.get(pk=post_pk)).order_by('-date_posted')
+
+# class CommentCreateView(LoginRequiredMixin, CreateView):
+#   model = Comment
+#   fields = ['comment']
+
+#   # Assign the current user as the author
+#   def form_valid(self, form):
+#     form.instance.author = self.request.user
+
+#     # Get post using pk in url
+#     form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
+
+#     return super().form_valid(form)
+  
+#   def get_success_url(self):
+#     return reverse('comment-create', kwargs={'pk': self.kwargs['pk']})
+  
+#   # Allows multiple models
+#   def get_context_data(self, **kwargs):
+#     context = super(CommentCreateView, self).get_context_data(**kwargs)
+
+#     # Comment does not exist yet, so use the url for post id
+#     context['post_pk'] = self.kwargs['pk']
+#     context['comments'] = Comment.objects.filter(post=Post.objects.get(pk=self.kwargs['pk'])).order_by('-date_posted')
+#     return context

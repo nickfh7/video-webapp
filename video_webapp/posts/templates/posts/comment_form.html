@@ -1,15 +1,22 @@
-{% extends "posts/base.html" %}
+{% extends "posts/shell.html" %}
 {% load crispy_forms_tags %}
-{% block content %}
-    <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <fieldset>
-        <legend class="border-bottom mb-4">New Comment</legend>
-        {{ form|crispy }}
-      </fieldset>
-      <div class="form-group">
-        <button class="btn btn-outline-info" type="submit">Post Comment</button>
-        <a class="btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-detail' pk=post_pk %}">Cancel</a>
+{% block body %}
+    <div class="fixed-top">
+      <div class="row">
+        <!--Spacing-->
+        <div class="col-md-1"></div>
+        <div class="col-md-8">
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset>
+              <h3 class=" mb-1">Edit Comment</h3>
+              {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+              <button class="btn btn-outline-info" type="submit">Post Comment</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
-{% endblock content %}
+    </div>
+{% endblock body %}
