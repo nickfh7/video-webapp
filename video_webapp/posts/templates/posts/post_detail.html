@@ -39,30 +39,26 @@
           <legend class="border-bottom mb-4">Comments ({{ page_obj.paginator.count }}) </legend> 
       </div>
     </div>
-    <p id="demo"></p>
-    <!--New Comment Button-->
-    <div id='hide-toggle-button1'>
-      <button class="btn btn-outline-info" onclick="hideToggle()">New Comment</button>
-    </div>
-    <!--New Comment Form, initially hidden-->
-    <div class="row" id='hide-toggle-button2' style="display:none">
-      <!--Spacing-->
-      <div class="row">
-        <div class="col-md-12">
-            <legend class="mb-4"></legend> 
+    <!--New Comment-->
+      <!--New Comment Button-->
+      <div id='hide-toggle-button1'>
+        <button class="btn btn-outline-info" onclick="hideToggle()">New Comment</button>
+      </div>
+      <!--New Comment Form, initially hidden-->
+      <div class="row" id='hide-toggle-button2' style="display:none">
+        <!--Spacing-->
+        <div class="row">
+          <div class="col-md-1"></div>
+          <div class="col-md-8">
+            <form method="post">
+              {% csrf_token %}
+              {{ comment_form|crispy }}
+              <button class="btn btn-outline-success" type="submit">Add New Comment</button>
+              <button class="btn btn-outline-dark" onclick="hideToggle()">Cancel</button>
+            </form>
+          </div>
         </div>
       </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-8">
-          <form method="post">
-            {% csrf_token %}
-            {{ comment_form|crispy }}
-            <button class="btn btn-outline-info" type="submit">Add New Comment</button>
-            <button class="btn btn-outline-info" onclick="hideToggle()">Cancel</button>
-          </form>
-        </div>
-      <!-- </div> -->
-    </div>
     <!--Spacing-->
     <div class="row">
         <div class="col-md-12">
