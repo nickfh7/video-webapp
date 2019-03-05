@@ -19,6 +19,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .models import Post, Comment
 from .forms import CommentCreationForm
+
 # Create your views here.
 
 ##########################
@@ -86,7 +87,7 @@ class PostDetailView(FormMixin, MultipleObjectMixin, DetailView):
       comment = form.save(commit=False)
       comment.post = Post.objects.get(pk=kwargs['pk'])
       comment.author = request.user
-      messages.success(request, f'Comment Created')
+      # messages.success(request, f'Comment Created')
       comment.save()
       return self.form_valid(form)
     else:

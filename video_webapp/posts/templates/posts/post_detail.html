@@ -50,7 +50,7 @@
         <div class="row">
           <div class="col-md-1"></div>
           <div class="col-md-8">
-            <form method="post">
+            <form method="post" class='new-comment-form'>
               {% csrf_token %}
               {{ comment_form|crispy }}
               <button class="btn btn-outline-success" type="submit">Add New Comment</button>
@@ -61,89 +61,105 @@
       </div>
     <!--Spacing-->
     <div class="row">
-        <div class="col-md-12">
-            <legend class="mb-4"></legend> 
-        </div>
+      <div class="col-md-12">
+        <legend class="mb-4"></legend> 
       </div>
-    <!--Comments-->
-    {% for com in object_list %}
-    <article class="media content-section">
-      <img class="rounded-circle article-img" src="{{ com.author.profile.image.url }}">
-      <div class="media-body">
-        <div class="article-metadata">
-          <a class="mr-2" href="{% url 'user-posts' com.author.username %}">{{ com.author }}</a>
-          <small class="text-muted">{{ com.date_posted|date:"l, F dS, Y, P T" }}</small>
-        </div>
-          <p class="break-words">{{ com.comment }}</p>
-        {% if com.author == user %}
-        <div>
-          <a class="text-muted" href="{% url 'comment-update' com.id %}">Edit Comment</a>
-          |
-          <a class="text-muted" href="{% url 'comment-delete' com.id %}">Delete Comment</a>
-        </div>
-        {% endif %}
-      </div>
-    </article>
-    {% endfor %}
-    {% if is_paginated %}
-
-      <!-- Add prev and first links if not already on first -->
-      {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-      {% endif %}
-
-      <!-- Add in pages around the current page -->
-      {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-          <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-          <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>    
-        {% endif %}
-      {% endfor %}
-
-      <!-- Add in the last if not at the end already -->
-      {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-      {% endif %}
-
-    {% endif %}
-    <!--End Comment-->
-    <!--Scripts-->
-    <script>
-      function hideToggle() {
-        var x = document.getElementById("hide-toggle-button1");
-        if (x) {
-          if (x.style.display === "none") {
-            x.style.display = "block";
-          } else {
-            x.style.display = "none";
-          }
-        }
-        x = document.getElementById("hide-toggle-button2");
-        if (x) {
-          if (x.style.display === "none") {
-            x.style.display = "block";
-          } else {
-            x.style.display = "none";
-          }
-        }
-        // var elems = document.getElementsByTagName("hide-toggle");
-        // if (elems){
-        //   for (var i = 0; i < elems.length; i++) {
-        //     var elem = elems[i];
-        //     text += i;
-        //     if (elem.style.display === "none") {
-        //       elem.style.display = "block";
-        //     } else {
-        //       elem.style.display = "none";
-        //     }
-        //     text += i + "<br>";
-        //   }
-        // }
-      }
-    </script>
+    </div>
+    <div id="comment-list" data-url="{{ request.build_absolute_uri|safe }}">
+      <!--Comments-->
+      {% include 'posts/comment_page.html' %}
+      <!--End Comments-->
+    </div>  
   </div>
 </div>
 {% endblock video %}
+{% block javascript %}
+  <!--Scripts-->
+  <!--Toggle for new comment-->
+  <script type="text/javascript">
+    function hideToggle() {
+      var x = document.getElementById("hide-toggle-button1");
+      if (x) {
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+      }
+      x = document.getElementById("hide-toggle-button2");
+      if (x) {
+        if (x.style.display === "none") {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+      }
+    }
+    $(function(){
+      var $newCommentForm = $('.new-comment-form')
+      $newCommentForm.submit(function(event){
+        console.log("Form Submitted")
+        event.preventDefault()
+        var $formData = $(this).serialize()
+        var $thisURL = window.location.href // Data is sent to current page
+        hideToggle() // Hide the new comment button
+        // Post Comment
+        $.ajax({
+          method: "POST",
+          url: $thisURL,
+          data: $formData,
+          success: handleFormSuccess,
+          error: handleFormError,
+        })
+        // Refresh Comments
+        $.ajax({
+          method: 'GET',
+          url: $newCommentForm.attr('data-url'),
+          dataType : 'json',
+          data: {},
+          success: function(data){
+            console.log(data)
+            $('#comment-list').replaceWith($('#comment-list',data));
+          },
+          error: function(error){
+            console.log(error);
+            console.log("comment list error");
+          }
+        });
+      })
+
+      // var refreshStream = function(){
+      //   var $thisURL = window.location.href // Data is sent to current page
+      //   $.ajax({
+      //     method: 'GET',
+      //     url: $thisURL,
+      //     data: {},
+      //     success: function(data){
+      //       $('#comment-list').replaceWith($('#comment-list',data));
+      //     },
+      //     error: function(error){
+      //       console.log(error);
+      //       console.log("error");
+      //     }
+      //   });
+      // }
+
+      // setInterval(function(){
+      //     refreshStream();
+      // },5 * 1000);
+
+      function handleFormSuccess(data, textStatus, jqXHR){
+        // console.log(data)
+        // console.log(textStatus)
+        // console.log(jqXHR)
+        $newCommentForm[0].reset(); // reset form data
+      }
+
+      function handleFormError(jqXHR, textStatus, errorThrown){
+        console.log(jqXHR)
+        console.log(textStatus)
+        console.log(errorThrown)
+      }
+    })
+  </script>
+{% endblock javascript %}
