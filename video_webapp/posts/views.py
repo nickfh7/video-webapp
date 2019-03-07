@@ -18,7 +18,7 @@ from django.views.generic import (
 from django.contrib import messages
 from django.urls import reverse
 from .models import Post, Comment
-from .forms import CommentCreationForm
+from .forms import CommentCreationForm, CommentDeleteForm, CommentUpdateForm
 
 # Create your views here.
 
@@ -60,16 +60,24 @@ class UserPostListView(ListView):
 # Uses MultipleObjectMixin to allow pagination, FormMixin for forms
 class PostDetailView(FormMixin, MultipleObjectMixin, DetailView):
   model = Post
-
   template_name = 'posts/post_detail.html'
   paginate_by = 5
-  form_class = CommentCreationForm
+  form_class = CommentCreationForm # Creation is the default
+  form_classes = {'create' : CommentCreationForm,
+                  'update' : CommentUpdateForm,
+                  'delete' : CommentDeleteForm
+                 }
 
   # Allows multiple models
   def get_context_data(self, **kwargs):
+    # Set list to paginate by
     object_list = Comment.objects.filter(post=self.get_object()).order_by('-date_posted')
     context = super(PostDetailView, self).get_context_data(object_list=object_list, **kwargs)
-    context['comment_form'] = self.get_form()
+
+    # Create form instances
+    context['comment_form'] = self.get_form(self.form_classes['create'])
+    context['update_form'] = self.get_form(self.form_classes['update'])
+    context['delete_form'] = self.get_form(self.form_classes['delete'])
     return context
 
   def get_success_url(self):
@@ -79,19 +87,58 @@ class PostDetailView(FormMixin, MultipleObjectMixin, DetailView):
     if not request.user.is_authenticated:
       return HttpResponseForbidden()
 
-    self.object = self.get_object()
-    form = self.get_form()
+    self.object = self.get_object() # Needed
+
+    # Create form submitted
+    if 'create' in request.POST:
+      comment_form = self.get_form(self.form_classes['create'])
+
+      if comment_form.is_valid():
+        print("Create form submitted")
+        comment = comment_form.save(commit=False)
+        comment.post = Post.objects.get(pk=kwargs['pk'])
+        comment.author = request.user
+        # messages.success(request, f'Comment Created')
+        comment.save()
+        return self.form_valid(comment_form)
+      else:
+        print("Invalid create form")
+        return self.form_invalid(comment_form)
+
+    # Update form submitted
+    elif 'update' in request.POST:
+      comment_id = request.POST.get('update')
+      instance = Comment.objects.get(id=comment_id)
+      update_form = CommentUpdateForm(instance=instance, data=request.POST or None)
+
+      if update_form.is_valid():
+        print("Update form Submitted")
+        update_form.save()
+        return self.form_valid(update_form)
+      else:
+        print("Invalid update form")
+        return self.form_valid(update_form)
+
+    # Delete form submitted
+    elif 'delete' in request.POST:
+      comment_id = request.POST.get('delete')
+      instance = Comment.objects.get(id=comment_id)
+      delete_form = CommentDeleteForm(instance=instance, data=request.POST or None)
+
+      if delete_form.is_valid():
+        print("Delete form submitted")
+        instance.delete()
+        return self.form_valid(delete_form)
+      else:
+        print("Invalid delete form")
+        return self.form_invalid(delete_form)
     
-    # If the forms are valid, get info and save
-    if form.is_valid():
-      comment = form.save(commit=False)
-      comment.post = Post.objects.get(pk=kwargs['pk'])
-      comment.author = request.user
-      # messages.success(request, f'Comment Created')
-      comment.save()
-      return self.form_valid(form)
+    # No form submitted
     else:
-      return self.form_invalid(form)
+      print("No matching forms")
+      return HttpResponseForbidden()
+      
+        
 
 class PostCreateView(LoginRequiredMixin, CreateView):
   model = Post
