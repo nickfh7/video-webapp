@@ -1,4 +1,7 @@
-// This is a collection of scripts that are loaded in the header
+/* This is a collection of scripts that are loaded in the header
+ * All new scripts should be written here
+ */
+
 
 /*
   Handles display toggling
@@ -45,9 +48,19 @@ $(function(){
   // Catches a form submit for a new comment
   $(document).on("submit", ".create-comment-form", function(event) {
     console.log("Create Form Submitted")
+
+    // Prevents the submission from going through
+    // Stops page reload
     event.preventDefault()
-    hideToggleDual('newcomment-toggle-button1','newcomment-toggle-button2') // Hide the new comment button
-    data = $(this).serialize() + '&' + this.name + "=" + $(this).attr('value')
+
+    // Hides the new comment form after submitting
+    hideToggleDual('newcomment-toggle-button1','newcomment-toggle-button2')
+
+    // Appends the form type to the data
+    // Shows up in the request.POST dictionary
+    data = $(this).serialize() + '&' + 'create' + '=' + $(this).attr('value')
+
+    // Sends data via an ajax call
     ajaxFormSubmit(data)
   })
 
@@ -55,7 +68,7 @@ $(function(){
   $(document).on("submit", ".update-comment-form", function(event) {
     console.log("Update Form Submitted")
     event.preventDefault()
-    data = $(this).serialize() + '&' + this.name + "=" + $(this).attr('value')
+    data = $(this).serialize() + '&' + 'update' + '=' + $(this).attr('value')
     ajaxFormSubmit(data)
   })
 
@@ -63,7 +76,7 @@ $(function(){
   $(document).on("submit", ".delete-comment-form", function(event) {
     console.log("Delete Form Submitted")
     event.preventDefault()
-    data = $(this).serialize() + '&' + this.name + "=" + $(this).attr('value')
+    data = $(this).serialize() + '&' + 'delete' + '=' + $(this).attr('value')
     ajaxFormSubmit(data)
   })
 
@@ -71,11 +84,15 @@ $(function(){
   function ajaxFormSubmit(data) {
     $.ajax({
       method: "POST",
-      url: window.location.href, // Data is sent to current page,
-      // Append the form data to the POST request
+      url: window.location.href,
       data: data,
-      success: handleFormSuccess,
-      error: handleFormError,
+      success: function(){
+        reloadComments()
+      },
+      error: function(error){
+        console.log(error);
+        console.log("comment list error");
+      }
     })
   }
 
@@ -88,6 +105,7 @@ $(function(){
       data: {},
       success: function(data){
         console.log("Reload success")
+        // Replace cpomment section with new data
         $('#comment-list').replaceWith($('#comment-list',data['content']));
       },
       error: function(error){
@@ -95,23 +113,6 @@ $(function(){
         console.log("comment list error");
       }
     });
-  }
-
-  // Called after receiving success from server
-  function handleFormSuccess(data, textStatus, jqXHR){
-    // reset form data, may not be needed with reload
-    $('.create-comment-form')[0].reset(); 
-    $('.update-comment-form')[0].reset();
-    $('.delete-comment-form')[0].reset();
-
-    reloadComments()
-  }
-  
-  // Called after receiving error from server
-  function handleFormError(jqXHR, textStatus, errorThrown){
-    console.log(jqXHR)
-    console.log(textStatus)
-    console.log(errorThrown)
   }
 
   /****** AJAX pagination ******/
@@ -127,7 +128,7 @@ $(function(){
   // Handles a pagination request for the provided page
   function ajaxPagination(page_num){
     console.log("Pagination pressed")
-    // Get new data
+    // Very similar to reloadComments, but passes in page_num argument
     $.ajax({
       method: 'GET',
       url: window.location.href,

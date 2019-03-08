@@ -18,21 +18,21 @@
 
       <!--Update form-->
       <div id='updatecomment-toggle-button-{{ com.id }}' style="display:none">
-        <form method="post" class='update-comment-form' name='update' value="{{ com.id }}">
+        <form method="post" class='update-comment-form' value="{{ com.id }}">
           {% csrf_token %}
           {{ update_form|crispy }}
-          <button class="btn btn-outline-success" name='update' value="{{ com.id }}" type="submit">Confirm Edit</button>
-          <a class="btn btn-outline-info" onclick="hideToggleDual('changecomment-toggle-button-{{ com.id }}','updatecomment-toggle-button-{{ com.id }}')">Cancel</a>
+          <button class="btn btn-outline-success" value="{{ com.id }}" type="submit">Confirm Edit</button>
+          <a class="btn btn-outline-secondary" onclick="hideToggleDual('changecomment-toggle-button-{{ com.id }}','updatecomment-toggle-button-{{ com.id }}')">Cancel</a>
         </form>
       </div>
 
       <!--Delete Form-->
       <div id='deletecomment-toggle-button-{{ com.id }}' style="display:none">
-        <form method="post" class='delete-comment-form' name='delete' value="{{ com.id }}">
+        <form method="post" class='delete-comment-form' value="{{ com.id }}">
           {% csrf_token %}
           {{ delete_form|crispy }}
-          <button class="btn btn-danger" name='delete' value="{{ com.id }}" type="submit">Confirm Delete</button>
-          <a class="btn btn-outline-info" onclick="hideToggleDual('changecomment-toggle-button-{{ com.id }}','deletecomment-toggle-button-{{ com.id }}')">Cancel</a>
+          <button class="btn btn-danger" value="{{ com.id }}" type="submit">Confirm Delete</button>
+          <a class="btn btn-outline-secondary" onclick="hideToggleDual('changecomment-toggle-button-{{ com.id }}','deletecomment-toggle-button-{{ com.id }}')">Cancel</a>
         </form>
       </div>
       {% endif %}

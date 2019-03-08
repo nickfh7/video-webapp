@@ -17,9 +17,11 @@ class Post(models.Model):
   # Optional video fields
   # blank means that it is not required on the form when posting
   # null allows the database to not have an entry (i.e. no default)
-  video = models.FileField(blank=True, null=True, upload_to='videos/%Y/%m/%d/',
-                           validators=[FileExtensionValidator(allowed_extensions=['mp4', 'ogb', 'webm'])]) 
-  video_thumbnail = models.ImageField(blank=True, default='default_thumbnail.jpg', upload_to='thumbnails/%Y/%m/%d/')
+  video = models.FileField(blank=True, null=True, upload_to='videos/%Y/%m/%d/', verbose_name='Video (optional)',
+    validators=[FileExtensionValidator(allowed_extensions=['mp4', 'ogb', 'webm'])]) 
+
+  video_thumbnail = models.ImageField(blank=True, default='default_thumbnail.jpg',  verbose_name='Video Thumbnail (optional)',
+    upload_to='thumbnails/%Y/%m/%d/')
 
   # For resizing thumnail
   def save(self, *args, **kwargs):
@@ -32,14 +34,12 @@ class Post(models.Model):
     thumbnail.thumbnail(output_size)
     thumbnail.save(self.video_thumbnail.path)
 
-  # Use title as the string for this post
+  # Use title as the string
   def __str__(self):
     return self.title
 
-  # Gets the url from the post using reverse function
   def get_absolute_url(self):
     return reverse('post-detail', kwargs={'pk': self.pk})
-
 
 class Comment(models.Model):
   post = models.ForeignKey(Post, on_delete=models.CASCADE)

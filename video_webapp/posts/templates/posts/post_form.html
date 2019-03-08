@@ -9,7 +9,8 @@
         {{ form|crispy }}
       </fieldset>
       <div class="form-group">
-        <button class="btn btn-outline-info" type="submit">Post</button>
+        <button class="btn btn-outline-success" type="submit">Post</button>
+        <a class="btn btn-outline-secondary" href="{% url 'posts-home' %}">Cancel</a>
       </div>
     </form>
   </div>

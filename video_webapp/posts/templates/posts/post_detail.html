@@ -4,17 +4,17 @@
 <div class="row">
   <!--Spacing-->
   <div class="col-md-1"></div>
-  <!--Actual content-->
+  <!--Post Content-->
   <div class="col-md-8">
-    <!--Video-->
     {% if object.video %}
+      <!--Video-->
       <video name="{{ object.video }}" controls width='100%'>
         <source src="{{ object.video.url }}"></source>
       </video>
     {% endif %}
-    <!--Video Title-->
+    <!--Post Title-->
     <h2 class="article-title">{{ object.title }}</h2>
-    <!--Video Description-->
+    <!--Post Description-->
     <article class="media content-section">
       <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
       <div class="media-body">
@@ -23,8 +23,8 @@
           <small class="text-muted">{{ object.date_posted|date:"l, F dS, Y, P T" }}</small>
         </div>
         <p class="article-content break-words">{{ object.content }}</p>
-        <!-- Update and Delete buttons -->
         {% if object.author == user %}
+        <!-- Update and Delete buttons -->
         <div>
           <a class="btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update Post</a>
           <a class="btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete Post</a>
@@ -33,7 +33,7 @@
       </div>
     </article>
     <!--Comment Section-->
-    <div id="comment-list" data-url="{% url 'comment-page' object.id %}">
+    <div id="comment-list">
       <!--Comments Title-->
       <div class="row">
         <div class="col-md-12">
@@ -47,15 +47,15 @@
         </div>
         <!--New Comment Form, initially hidden-->
         <div class="row" id='newcomment-toggle-button2' style="display:none">
-          <!--Spacing-->
           <div class="row">
+            <!--Spacing-->
             <div class="col-md-1"></div>
             <div class="col-md-8">
-              <form method="post" class='create-comment-form' name='create' value=''>
+              <form method="post" class='create-comment-form' value=''>
                 {% csrf_token %}
                 {{ comment_form|crispy }}
-                <button class="btn btn-outline-success" name='create' value="" type="submit">Add New Comment</button>
-                <a class="btn btn-outline-dark" onclick="hideToggleDual('newcomment-toggle-button1','newcomment-toggle-button2')">Cancel</a>
+                <button class="btn btn-outline-success" type="submit">Add New Comment</button>
+                <a class="btn btn-outline-secondary" onclick="hideToggleDual('newcomment-toggle-button1','newcomment-toggle-button2')">Cancel</a>
               </form>
             </div>
           </div>
@@ -73,6 +73,3 @@
   </div>
 </div>
 {% endblock video %}
-{% block javascript %}
-  <!--Scripts-->
-{% endblock javascript %}
