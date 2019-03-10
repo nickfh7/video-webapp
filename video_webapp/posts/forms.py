@@ -2,7 +2,7 @@ from django import forms
 from .models import Comment
 
 class CommentCreationForm(forms.ModelForm):
-  # Type of field in rendered form
+  # Type of field used in rendered form
   comment = forms.CharField(label="", help_text="", widget=forms.Textarea(attrs={'rows':5,'cols':20, 'style':'resize:none;'}))
 
   class Meta:

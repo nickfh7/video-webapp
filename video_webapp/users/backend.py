@@ -2,6 +2,7 @@ from django.contrib.auth.backends import ModelBackend
 from .models import CustomUser
 from ipware.ip import get_ip
 
+# Backend for getting ip
 class IpBackend(ModelBackend):
   def authenticate(self, request, username=None, password=None):
     ip = get_ip(request)

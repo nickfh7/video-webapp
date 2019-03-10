@@ -41,11 +41,10 @@ class Post(models.Model):
   def get_absolute_url(self):
     return reverse('post-detail', kwargs={'pk': self.pk})
 
+# The comment model is for creating comments within the post model
 class Comment(models.Model):
   post = models.ForeignKey(Post, on_delete=models.CASCADE)
   author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
   comment = models.TextField(verbose_name=u"")
   date_posted = models.DateTimeField(default=timezone.now)
 
-  def get_absolute_url(self):
-    return reverse('comment-detail', kwargs={'pk': self.pk})

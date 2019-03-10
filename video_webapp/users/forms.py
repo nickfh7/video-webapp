@@ -5,13 +5,11 @@ from .models import CustomUser, Profile
 from django.contrib.auth import get_user_model
 
 class CustomUserCreationForm(forms.ModelForm):
-
   class Meta(UserCreationForm):
     model = CustomUser
     fields = ('username',)
 
 class CustomUserChangeForm(forms.ModelForm):
-
   class Meta:
     model = CustomUser
     fields = ('username',)

@@ -52,7 +52,7 @@ class UserPostListView(ListView):
   context_object_name = 'posts'
   paginate_by = 5
 
-  # Narrow the query set for displaying a user profile
+  # Narrow the query set for displaying only post from a given user
   def get_queryset(self):
     user = get_object_or_404(get_user_model(), username=self.kwargs.get('username'))
     return Post.objects.filter(author=user).order_by('-date_posted')
@@ -64,10 +64,6 @@ class PostDetailView(FormMixin, MultipleObjectMixin, DetailView):
   template_name = 'posts/post_detail.html'
   paginate_by = 5
   form_class = CommentCreationForm # Creation is the default
-  form_classes = {'create' : CommentCreationForm,
-                  'update' : CommentUpdateForm,
-                  'delete' : CommentDeleteForm
-                 }
 
   # Allows multiple models
   def get_context_data(self, **kwargs):
@@ -139,7 +135,7 @@ class PostDetailView(FormMixin, MultipleObjectMixin, DetailView):
         print("Invalid delete form")
         return self.form_invalid(delete_form)
     
-    # No form submitted
+    # No (known) form submitted
     else:
       print("No matching forms")
       return HttpResponseForbidden()  
@@ -171,7 +167,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
   model = Post
-  success_url = "/"
+  success_url = "/" # Where to go after delete succeeds
 
   def test_func(self):
     post = self.get_object()
