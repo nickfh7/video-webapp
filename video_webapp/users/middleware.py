@@ -9,8 +9,8 @@ def AuthRequiredMiddleware(get_response):
     response = get_response(request)
 
     # Allow user to continue if logged in
-    # Does not redirect if on the login or register page without being logged in
-    if request.user.is_authenticated or request.path == reverse('login'):
+    # Does not redirect if on the admin, login, or register page without being logged in
+    if request.user.is_authenticated or request.path == reverse('login') or request.path == reverse('admin') or request.path == reverse('admin:login'):
       return response
     elif not request.user.is_authenticated and request.path == reverse('register'):
       return response
