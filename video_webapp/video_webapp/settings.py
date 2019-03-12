@@ -151,5 +151,5 @@ AUTHENTICATION_BACKENDS = ['users.backend.IpBackend']
 
 # ADMIN INFO
 # To reset, use shell
-ADMIN_LOGIN = 'Nick'
-ADMIN_PASSWORD = 'pbkdf2_sha256$120000$Xp6bC6cb9PPl$PRAphAIFY2CsWyXeulxcgg6drOuXYdvEHPwRKiRbcnc=' #keysersoze
+# ADMIN_LOGIN = 'Nick'
+# ADMIN_PASSWORD = 'pbkdf2_sha256$120000$Xp6bC6cb9PPl$PRAphAIFY2CsWyXeulxcgg6drOuXYdvEHPwRKiRbcnc=' #keysersoze
