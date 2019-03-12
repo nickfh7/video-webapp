@@ -8,7 +8,7 @@ from PIL import Image
 class CustomUser(AbstractUser):
   # add additional fields in here for custom user
   user_ip = models.GenericIPAddressField(blank=True, null=True, unique=True)
-  password = models.GenericIPAddressField(blank=True, null=True)
+  # password = models.GenericIPAddressField(blank=True, null=True)
   
 # Profile is a model for attaching things like images to a user
 class Profile(models.Model):
