@@ -16,7 +16,7 @@ def AuthRequiredMiddleware(get_response):
     elif request.path.startswith('/admin/'):
       print("REDIRECT b")
       return response
-    elif request.user.is_authenticated or request.path == reverse('login')  or request.path.startswith('/favicon.ico'):
+    elif request.user.is_authenticated or request.path == reverse('login') or request.path.startswith('/favicon.ico'):
       print("RESPONSE 1")
       return response
     elif not request.user.is_authenticated and request.path == reverse('register'):

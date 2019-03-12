@@ -147,7 +147,10 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4' # html templates
 LOGIN_REDIRECT_URL = 'posts-home'
 LOGIN_URL = 'login'
 
-AUTHENTICATION_BACKENDS = ['users.backend.IpBackend']
+AUTHENTICATION_BACKENDS = [
+  'django.contrib.auth.backends.ModelBackend',
+  'users.backend.IpBackend',
+]
 
 # ADMIN INFO
 # To reset, use shell
