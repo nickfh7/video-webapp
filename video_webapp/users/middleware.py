@@ -19,5 +19,4 @@ def AuthRequiredMiddleware(get_response):
     else:
       return redirect('login')
 
->>>>>>> e4ba59c2614ba8b1e8aaef7cb56eaebcdedf58c8
   return middleware
