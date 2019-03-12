@@ -23,7 +23,7 @@ from django.views.generic import RedirectView
 from users import views as user_views
 
 urlpatterns = [
-  path('admin/', admin.site.urls),
+  path('admin/', admin.site.urls, name='admin'),
   path('register/', user_views.register, name='register'),
   path('profile/', user_views.profile, name='profile'),
   path('login/', user_views.ip_login, name='login'),
