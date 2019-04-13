@@ -63,6 +63,7 @@ MIDDLEWARE = [
     # added
     'django_ajax.middleware.AJAXMiddleware',
     'users.middleware.AuthRequiredMiddleware',
+    'users.middleware.LoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'video_webapp.urls'
@@ -142,6 +143,9 @@ AUTH_USER_MODEL = 'users.CustomUser'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+# Storage of log files
+LOGGING_ROOT = os.path.join(BASE_DIR, 'logging')
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4' # html templates
 
 LOGIN_REDIRECT_URL = 'posts-home'
@@ -152,7 +156,3 @@ AUTHENTICATION_BACKENDS = [
   'users.backend.IpBackend',
 ]
 
-# ADMIN INFO
-# To reset, use shell
-# ADMIN_LOGIN = 'Nick'
-# ADMIN_PASSWORD = 'pbkdf2_sha256$120000$Xp6bC6cb9PPl$PRAphAIFY2CsWyXeulxcgg6drOuXYdvEHPwRKiRbcnc=' #keysersoze
