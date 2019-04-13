@@ -34,29 +34,61 @@ def LoggingMiddleware(get_response):
     response = get_response(request)
 
     try:
-
       current_url = resolve(request.path_info).url_name
 
-      # Only log data if the user is authenticated and is accessing a post
-      if request.user.is_authenticated and current_url == 'post-detail' and request.method == 'GET':
+      if request.user.is_authenticated:
+        print(request.POST)
         # Get the log directory
         LOG_DIRECTORY = settings.LOGGING_ROOT + '/user_activity.log'
+        log_data = {}
 
-        # Get the post pk from substring of /posts/<int:pk>
-        post_pk = int(str(request.path)[7:-1])
+        print("***********************" + str(request.method) + "&" + str(current_url))
 
-        # Data to store
-        log_data = {
-          "user_ip"    : str(request.user.user_ip),
-          "path"       : str(request.path),
-          "post_name"  : str(Post.objects.get(pk=post_pk)),
-          "time_stamp" : str(datetime.datetime.now()),
-        }
+        # Record info
+        log_data["user_ip"]    = str(request.user.user_ip)
+        log_data["path"]       = str(request.path)
+        log_data["time_stamp"] = str(datetime.datetime.now())
 
-        # Write to log file
-        log_file = open(LOG_DIRECTORY, 'a')
-        log_file.write(str(log_data))
-        log_file.close()
+        # User is accessing a post
+        if current_url == 'post-detail':
+
+          # Get the post pk from substring of /posts/<int:pk>
+          post_pk = int(str(request.path)[7:-1])
+          log_data["post_id"] = post_pk
+          log_data["post_name"] = str(Post.objects.get(pk=post_pk))
+
+          # User viewed post
+          if request.method == 'GET':
+            log_data["action"] = 'viewed post'
+          
+          # User action with a comment
+          elif request.method == 'POST':
+            if 'create' in request.POST:
+              log_data["action"] = 'created comment'
+            if 'update' in request.POST:
+              log_data["action"] = 'updated comment'
+            if 'delete' in request.POST:
+              log_data["action"] = 'deleted comment'
+
+        # User action with a post
+        elif request.method == 'POST':    
+          if current_url == 'post-create':
+            log_data["action"] = 'created post'
+          elif current_url == 'post-update':
+            log_data["action"] = 'updated post'
+          elif current_url == 'post-delete':
+            log_data["action"] = 'deleted post'
+
+        # No useful data, clear log
+        else:
+          log_data = {}
+
+        # Log any data that was collected
+        if len(log_data) > 0:
+          # Write to log file
+          log_file = open(LOG_DIRECTORY, 'a')
+          log_file.write(str(log_data) + "\n")
+          log_file.close()
 
     except Exception as e:
       print("Failed to log: " + str(e))
