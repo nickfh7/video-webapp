@@ -12,10 +12,12 @@
     <link rel="stylesheet" type="text/css" href="{% static 'posts/main.css' %}">
 
     {% if title %}
-      <title>Local Video/Blog Site - {{ title }}</title>
+      <title>{{ title }} - Local App</title>
     {% else %}
-      <title>Local Video/Blog Site</title>
+      <title>Local App</title>
     {% endif %}
+
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
     
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>

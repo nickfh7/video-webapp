@@ -9,3 +9,19 @@
 {'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-13 15:06:17.185552', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
 {'user_ip': '127.0.0.1', 'path': '/posts/new/', 'time_stamp': '2019-04-13 15:07:51.996414', 'action': 'created post'}
 {'user_ip': '127.0.0.1', 'path': '/posts/22/', 'time_stamp': '2019-04-13 15:07:52.038272', 'post_id': 22, 'post_name': 'New Post 3', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/22/', 'time_stamp': '2019-04-16 10:25:36.014493', 'post_id': 22, 'post_name': 'New Post 3', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/22/delete/', 'time_stamp': '2019-04-16 10:25:54.825787', 'action': 'deleted post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:25:57.425625', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/update/', 'time_stamp': '2019-04-16 10:26:01.384911', 'action': 'updated post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:26:01.426580', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:26:59.101538', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:27:10.347561', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'created comment'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:27:10.434783', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:27:23.622260', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'updated comment'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:27:23.729775', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:27:26.896112', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'deleted comment'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:27:26.971292', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/profile/', 'time_stamp': '2019-04-16 10:27:50.091554'}
+{'user_ip': '127.0.0.1', 'path': '/profile/', 'time_stamp': '2019-04-16 10:34:20.743601', 'action': 'updated profile'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:52:57.566017', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}
+{'user_ip': '127.0.0.1', 'path': '/posts/21/', 'time_stamp': '2019-04-16 10:54:56.720777', 'post_id': 21, 'post_name': 'New Post 2', 'action': 'viewed post'}

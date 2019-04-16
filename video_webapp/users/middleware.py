@@ -37,12 +37,9 @@ def LoggingMiddleware(get_response):
       current_url = resolve(request.path_info).url_name
 
       if request.user.is_authenticated:
-        print(request.POST)
         # Get the log directory
         LOG_DIRECTORY = settings.LOGGING_ROOT + '/user_activity.log'
         log_data = {}
-
-        print("***********************" + str(request.method) + "&" + str(current_url))
 
         # Record info
         log_data["user_ip"]    = str(request.user.user_ip)
@@ -70,7 +67,7 @@ def LoggingMiddleware(get_response):
             if 'delete' in request.POST:
               log_data["action"] = 'deleted comment'
 
-        # User action with a post
+        # User submitted something
         elif request.method == 'POST':    
           if current_url == 'post-create':
             log_data["action"] = 'created post'
@@ -78,6 +75,8 @@ def LoggingMiddleware(get_response):
             log_data["action"] = 'updated post'
           elif current_url == 'post-delete':
             log_data["action"] = 'deleted post'
+          elif current_url == 'profile':
+            log_data["action"] = 'updated profile'
 
         # No useful data, clear log
         else:
