@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python3.7 usr/bin/video_webapp/manage.py 8000
