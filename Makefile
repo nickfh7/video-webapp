@@ -11,7 +11,7 @@ webapp: target
 		--output-type deb \
 		--force \
 		--vendor uw-ictd \
-		--config-files /usr/bin/colte-webadmin/.env \
+		--config-files /usr/bin/video_webapp/.env \
 		--maintainer durandn@cs.washington.edu \
 		--description "Web application for Local App" \
 		--url "https://github.com/uw-ictd/colte" \
