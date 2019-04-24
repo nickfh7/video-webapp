@@ -22,5 +22,4 @@ webapp: target
 		--after-remove ./package/video_webapp/postrm \
 		./video_webapp/=/usr/bin/video_webapp \
 		./package/video_webapp/video_webapp.service=/etc/systemd/system/video_webapp.service \
-		./package/video_webapp/video_webapp.env=/usr/local/etc/colte/video_webapp.env 
 
