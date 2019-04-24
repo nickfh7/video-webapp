@@ -156,3 +156,5 @@ AUTHENTICATION_BACKENDS = [
   'users.backend.IpBackend',
 ]
 
+# Admin name: Admin
+# Password  : adminpassword
